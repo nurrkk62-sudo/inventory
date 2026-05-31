@@ -1,80 +1,98 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
 use App\Services\ItemService;
-use App\Models\Item;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class ItemController extends Controller
 {
-    protected ItemService $svc;
-    public function __construct(ItemService $svc)
-{
-    $this->svc = $svc;
-}
-    public function index()
-{
-    return response()->json([
-        'status' => 'success',
-        'data' => $this->svc->all(),
-        'message' => 'Berhasil menarik semua data Item'
-    ]);
-}
+    protected ItemService $itemService;
 
-    public function store(StoreItemRequest $req)
-{
-    $item = $this->svc->create($req->validated());
+    public function __construct(ItemService $itemService)
+    {
+        $this->itemService = $itemService;
+    }
 
-    return response()->json([
-        'status' => 'success',
-        'data' => $item,
-        'message' => 'Item berhasil dibuat'
-    ], 201);
-}
+    /**
+     * GET /api/items
+     */
+    public function index(): JsonResponse
+    {
+        $items = $this->itemService->all();
 
-    public function show($id)
-{
-    try {
+        return response()->json([
+            'status' => 'success',
+            'data' => $items,
+            'message' => 'Berhasil mengambil semua data item',
+        ]);
+    }
 
-        $item = $this->svc->find($id);
+    /**
+     * GET /api/items/{id}
+     */
+    public function show(int $id): JsonResponse
+    {
+        $item = $this->itemService->find($id);
 
         return response()->json([
             'status' => 'success',
             'data' => $item,
-            'message' => 'Berhasil menarik satu data Item'
+            'message' => 'Berhasil mengambil detail item',
         ]);
+    }
 
-    } catch (\Exception $e) {
+    /**
+     * POST /api/items
+     */
+    public function store(StoreItemRequest $request): JsonResponse
+    {
+        $item = $this->itemService->create(
+            $request->validated()
+        );
 
         return response()->json([
-            'status' => 'error',
-            'data' => null,
-            'message' => $e->getMessage()
-        ], 404);
+            'status' => 'success',
+            'data' => $item,
+            'message' => 'Item berhasil ditambahkan',
+        ], 201);
     }
-}
 
-    public function update(UpdateItemRequest $req, $id)
-{
-    $item = $this->svc->update($id, $req->validated());
+    /**
+     * PUT /api/items/{id}
+     */
+    public function update(
+        UpdateItemRequest $request,
+        int $id
+    ): JsonResponse {
 
-    return response()->json([
-        'status' => 'success',
-        'data' => $item,
-        'message' => 'Item berhasil diperbarui'
-    ]);
-}
+        $item = $this->itemService->update(
+            $id,
+            $request->validated()
+        );
 
-    public function destroy($id)
-{
-    $this->svc->delete($id);
+        return response()->json([
+            'status' => 'success',
+            'data' => $item,
+            'message' => 'Item berhasil diperbarui',
+        ]);
+    }
 
-    return response()->json([
-        'status' => 'success',
-        'data' => null,
-        'message' => 'Item berhasil dihapus'
-    ], 204);
-}
+    /**
+     * DELETE /api/items/{id}
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        $item = $this->itemService->find($id);
+
+        $this->itemService->delete($id);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $item,
+            'message' => 'Item berhasil dihapus',
+        ]);
+    }
 }
