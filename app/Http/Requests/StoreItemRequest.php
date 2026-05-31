@@ -6,35 +6,27 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreItemRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     */
     public function rules(): array
     {
         return [
             'name' => 'required|string|max:255',
-            'quantity' => 'required|integer|min:0',
+            'stock' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
         ];
     }
 
-    /**
-     * Custom validation messages.
-     */
     public function messages(): array
     {
         return [
             'name.required' => 'Nama item wajib diisi.',
-            'quantity.integer' => 'Jumlah harus angka bulat.',
+            'stock.required' => 'Stok wajib diisi.',
+            'stock.integer' => 'Stok harus berupa angka bulat.',
             'price.numeric' => 'Harga harus berupa angka.',
             'category_id.exists' => 'Kategori tidak ditemukan.',
         ];
