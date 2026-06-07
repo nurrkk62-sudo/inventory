@@ -6,8 +6,9 @@ use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
 use App\Services\ItemService;
 use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Api\BaseController;
 
-class ItemController extends Controller
+class ItemController extends BaseController
 {
     protected ItemService $itemService;
 
