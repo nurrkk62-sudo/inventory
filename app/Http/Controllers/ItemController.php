@@ -6,6 +6,7 @@ use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
 use App\Services\ItemService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController;
 
 class ItemController extends BaseController
@@ -20,14 +21,21 @@ class ItemController extends BaseController
     /**
      * GET /api/items
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         $items = $this->itemService->all();
+// Filter item berdasarkan category_id jika parameter diberikan
+        if ($request->filled('category_id')) {
+            $items = $items->where(
+                'category_id',
+                $request->category_id
+            );
+        }
 
         return response()->json([
             'status' => 'success',
-            'data' => $items,
-            'message' => 'Berhasil mengambil semua data item',
+            'data' => $items->values(),
+            'message' => 'Berhasil mengambil data item',
         ]);
     }
 
@@ -68,7 +76,6 @@ class ItemController extends BaseController
         UpdateItemRequest $request,
         int $id
     ): JsonResponse {
-
         $item = $this->itemService->update(
             $id,
             $request->validated()
