@@ -24,7 +24,7 @@ class ItemController extends BaseController
     public function index(Request $request): JsonResponse
     {
         $items = $this->itemService->all();
-
+// Filter item berdasarkan category_id jika parameter diberikan
         if ($request->filled('category_id')) {
             $items = $items->where(
                 'category_id',
