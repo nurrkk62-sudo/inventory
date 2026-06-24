@@ -57,17 +57,13 @@ class ItemController extends BaseController
      * POST /api/items
      */
     public function store(StoreItemRequest $request): JsonResponse
-    {
-        $item = $this->itemService->create(
-            $request->validated()
-        );
+{
+    dump($request->all());
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $item,
-            'message' => 'Item berhasil ditambahkan',
-        ], 201);
-    }
+    return response()->json([
+        'debug' => $request->all()
+    ]);
+}
 
     /**
      * PUT /api/items/{id}

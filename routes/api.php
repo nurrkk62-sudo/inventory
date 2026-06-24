@@ -20,4 +20,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('items', ItemController::class)->except(['destroy']);
     Route::delete('items/{item}', [ItemController::class, 'destroy'])->middleware('role:admin');
 
+    Route::prefix('v1')->middleware([
+    'auth:sanctum',
+    'throttle:60,1'
+])->group(function () {
+
+});
+
 });
